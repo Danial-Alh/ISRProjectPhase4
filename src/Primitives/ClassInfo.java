@@ -12,6 +12,8 @@ public class ClassInfo {
     public ClassInfo(String newsGroup)
     {
         this.newsGroup = newsGroup;
+        this.wordsDocDictionary = new Trie();
+        this.docs = new Vector<DocInfo>();
     }
 
     public void addNewDoc(DocInfo newDoc)
@@ -65,5 +67,14 @@ public class ClassInfo {
     public void setDocs(Vector<DocInfo> docs)
     {
         this.docs = docs;
+    }
+
+    public double getAverageWordOccurence(String word)
+    {
+        Vector<DocInfo> docVector = (Vector<DocInfo>) wordsDocDictionary.get(word);
+        long totalOccurence = 0;
+        for(DocInfo doc : docVector)
+            totalOccurence += doc.getWordOccurence(word);
+        return totalOccurence/((double) docVector.size());
     }
 }

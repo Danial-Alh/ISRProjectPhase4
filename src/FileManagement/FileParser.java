@@ -76,7 +76,7 @@ public class FileParser {
             e.printStackTrace();
         }
         return new DocInfo(f.getName(), result.get(DocFieldKeys.KEY[0]),
-                result.get(DocFieldKeys.KEY[2]).split(" ?\\r?\\n?.\""));
+                result.get(DocFieldKeys.KEY[2]).split("[\\p{Punct}\\s]+"));
     }
 
 }

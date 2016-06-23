@@ -15,6 +15,7 @@ public class DocInfo {
         this.name = docName;
         this.newsGroup = newsGroup;
         this.wordsInTrie = new Trie();
+        this.words = new Vector<Term>();
 
         for(String token: tokens)
             if(!token.trim().equalsIgnoreCase(""))
@@ -23,7 +24,8 @@ public class DocInfo {
                 if((wordIndexInVector = (Integer) wordsInTrie.get(token)) == null)
                 {
                     words.add(new Term(token, 1));
-                    wordsInTrie.put(token, words.size()-1);
+                    wordIndexInVector = words.size()-1;
+                    wordsInTrie.put(token, wordIndexInVector);
                 }
                 else
                     words.elementAt(wordIndexInVector).occurences++;
@@ -68,5 +70,12 @@ public class DocInfo {
     public void setWords(Vector<Term> words)
     {
         this.words = words;
+    }
+
+    public long getWordOccurence(String word)
+    {
+        Integer wordIndexInVector;
+        wordIndexInVector = (Integer) wordsInTrie.get(word);
+        return words.elementAt(wordIndexInVector).occurences;
     }
 }

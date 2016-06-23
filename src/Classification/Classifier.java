@@ -2,6 +2,7 @@ package Classification;
 
 import Primitives.ClassInfo;
 import Primitives.DocInfo;
+import Primitives.OccurenceHolder;
 import Primitives.Term;
 import com.sun.org.apache.xml.internal.utils.Trie;
 
@@ -9,7 +10,14 @@ import java.util.Vector;
 
 public class Classifier {
     private Vector<ClassInfo> classes;
-    private Trie wordClassDictionary;
+    private Trie wordClassDictionary; // words and their class vector
+    private Vector<String> words;
+
+    public Classifier()
+    {
+        classes = new Vector<ClassInfo>();
+        wordClassDictionary = new Trie();
+    }
 
     public void addNewDoc(DocInfo newDoc)
     {
@@ -28,17 +36,39 @@ public class Classifier {
     {
         for(Term term : newDoc.getWords())
         {
-            Vector<ClassInfo> classVector = (Vector<ClassInfo>) wordClassDictionary.get(term.content);
+            WordOccurenceInAllClasses classVector = (WordOccurenceInAllClasses) wordClassDictionary.get(term.content);
             if(classVector == null)
             {
-                classVector = new Vector<ClassInfo>();
+                classVector = new WordOccurenceInAllClasses(new Vector<WordOccurenceInClass>(), 0);
                 wordClassDictionary.put(term.content, classVector);
+                words.add(term.content);
             }
-            if(!classVector.contains(classInfo))
+            WordOccurenceInClass classData = getWordOccurenceInClassFromVector(classVector, classInfo);
+            if(classData == null)
             {
-                classVector.add(classInfo);
+                classData = new WordOccurenceInClass(classInfo, 0);
+                classVector.area.add(classData);
             }
+            classVector.occurences += term.occurences;
+            classData.occurences += term.occurences;
+
         }
+    }
+
+    private WordOccurenceInClass getWordOccurenceInClassFromVector(WordOccurenceInAllClasses classVector, ClassInfo classInfo)
+    {
+        for(WordOccurenceInClass temp: classVector.area)
+            if(temp.area == classInfo)
+                return temp;
+        return null;
+    }
+
+    private boolean classVectorContainsClassInfo(WordOccurenceInAllClasses classVector, ClassInfo classInfo)
+    {
+        for(WordOccurenceInClass temp: classVector.area)
+            if(temp.area == classInfo)
+                return true;
+        return false;
     }
 
     private ClassInfo getCorrespondingClassInfo(String newsGroup)
@@ -54,34 +84,65 @@ public class Classifier {
 
     }
 
-    public double getWordOccurenceProbabilityInAllNewsGroup(String word)
+    public double getWordOccurenceProbabilityInAllClasses(String word)
     {
+        return ((WordOccurenceInAllClasses)wordClassDictionary.get(word)).area.size()/(double)(classes.size());
+    }
+
+    public double getWordOccurenceProbabilityInClass(String word, int classInfoIndex) // P(wi, ck)
+    {
+        // TODO
         return -1;
     }
 
-    public double getWordOccurenceProbabilityInNewsGroup(String word, int classInfoIndex) // P(wi, ck)
+    public double getAverageWordOccurenceInClass(String word, int classInfoIndex)
     {
-        return -1;
+        return classes.elementAt(classInfoIndex).getAverageWordOccurence(word);
     }
 
-    public double getAverageWordOccurenceInNewsGroup(String word, int classInfoIndex)
+    public double getClassUseProbability(int classInfoIndex) // P(ck)
     {
-        return -1;
-    }
-
-    public double getNewsGroupUseProbability(int classInfoIndex) // P(ck)
-    {
-        return -1;
+        long totalDocs = 0;
+        for(ClassInfo classInfo : classes)
+            totalDocs += classInfo.getDocs().size();
+        return classes.elementAt(classInfoIndex).getDocs().size()/((double) totalDocs);
     }
 
     public double getDocClassMatchProbability(int classInfoIndex, DocInfo doc)
     {
+        // TODO
         return -1;
     }
 
     public String[] getVector(DocInfo doc)
     {
-        return null;
+        String[] result = new String[words.size()];
+        for(int i = 0; i < words.size(); i++)
+        {
+            if(doc.getWordsInTrie().get(words.elementAt(i)) == null)
+                result[i] = null;
+            else
+                result[i] = words.elementAt(i);
+        }
+        return result;
+    }
+
+    class WordOccurenceInClass extends OccurenceHolder<ClassInfo>
+    {
+
+        public WordOccurenceInClass(ClassInfo classInfo, long occurences)
+        {
+            super(classInfo, occurences);
+        }
+    }
+
+    class WordOccurenceInAllClasses extends OccurenceHolder<Vector<WordOccurenceInClass>>
+    {
+
+        public WordOccurenceInAllClasses(Vector<WordOccurenceInClass> area, long occurences)
+        {
+            super(area, occurences);
+        }
     }
 }
 
