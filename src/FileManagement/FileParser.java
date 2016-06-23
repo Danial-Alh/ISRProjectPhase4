@@ -1,20 +1,24 @@
 package FileManagement;
 
+import Primitives.DocInfo;
 import javafx.util.Pair;
+import sun.java2d.loops.FillPath;
+
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Vector;
 
 public class FileParser {
 
-    public static Vector<Pair<String, String>> parse(String filePath)
+    public static DocInfo parse(String filePath)
     {
         File file = new File(filePath);
         return parse(file);
     }
-    public static Vector<Pair<String, String>> parse(File f)
+    public static DocInfo parse(File f)
     {
-        Vector<Pair<String, String>> result = new Vector<Pair<String, String>>();
+        HashMap<String, String> result = new HashMap<String, String>();
 
         InputStream fis = null;
         try {
@@ -66,11 +70,13 @@ public class FileParser {
                     }
                 }
 
-                result.add(new Pair<String, String>(key, value));
+                result.put(key, value);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return new DocInfo(f.getName(), result.get(DocFieldKeys.KEY[0]),
+                result.get(DocFieldKeys.KEY[2]).split(" ?\\r?\\n?.\""));
     }
+
 }
