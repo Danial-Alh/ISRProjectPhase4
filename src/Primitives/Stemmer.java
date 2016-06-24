@@ -43,10 +43,7 @@ public class Stemmer {
         for ( int i=0; i<suffix.length(); i++ )
             tmp += suffix.charAt( i );
 
-        if ( tmp.compareTo( word ) == 0 )
-            return true;
-        else
-            return false;
+        return tmp.compareTo(word) == 0;
     }
 
     boolean vowel( char ch, char prev ) {
@@ -131,16 +128,10 @@ public class Stemmer {
                 && (vowel(str.charAt(length-2),str.charAt(length-3))) ) {
 
             if (length == 3) {
-                if (!vowel(str.charAt(0),'?'))
-                    return true;
-                else
-                    return false;
+                return !vowel(str.charAt(0), '?');
             }
             else {
-                if (!vowel(str.charAt(length-3),str.charAt(length-4)) )
-                    return true;
-                else
-                    return false;
+                return !vowel(str.charAt(length - 3), str.charAt(length - 4));
             }
         }
 
@@ -149,6 +140,8 @@ public class Stemmer {
 
     String step1( String str ) {
 
+        if (str.equalsIgnoreCase(""))
+            return "";
         NewString stem = new NewString();
 
         if ( str.charAt( str.length()-1 ) == 's' ) {
@@ -227,6 +220,8 @@ public class Stemmer {
 
     String step2( String str ) {
 
+        if (str.equalsIgnoreCase(""))
+            return "";
         String[][] suffixes = { { "ational", "ate" },
                 { "tional",  "tion" },
                 { "enci",    "ence" },
@@ -266,6 +261,8 @@ public class Stemmer {
 
     String step3( String str ) {
 
+        if (str.equalsIgnoreCase(""))
+            return "";
         String[][] suffixes = { { "icate", "ic" },
                 { "ative", "" },
                 { "alize", "al" },
@@ -288,6 +285,9 @@ public class Stemmer {
 
     String step4( String str ) {
 
+        if (str.equalsIgnoreCase(""))
+            return "";
+
         String[] suffixes = { "al", "ance", "ence", "er", "ic", "able", "ible", "ant", "ement", "ment", "ent", "sion", "tion",
                 "ou", "ism", "ate", "iti", "ous", "ive", "ize", "ise"};
 
@@ -306,32 +306,31 @@ public class Stemmer {
     }
 
     String step5( String str ) {
-
-        if ( str.charAt(str.length()-1) == 'e' ) {
-            if ( measure(str) > 1 ) {/* measure(str)==measure(stem) if ends in vowel */
+        if (str.equalsIgnoreCase(""))
+            return "";
+        if (str.charAt(str.length() - 1) == 'e') {
+            if (measure(str) > 1) {/* measure(str)==measure(stem) if ends in vowel */
                 String tmp = "";
-                for ( int i=0; i<str.length()-1; i++ )
-                    tmp += str.charAt( i );
+                for (int i = 0; i < str.length() - 1; i++)
+                    tmp += str.charAt(i);
                 str = tmp;
-            }
-            else
-            if ( measure(str) == 1 ) {
+            } else if (measure(str) == 1) {
                 String stem = "";
-                for ( int i=0; i<str.length()-1; i++ )
-                    stem += str.charAt( i );
+                for (int i = 0; i < str.length() - 1; i++)
+                    stem += str.charAt(i);
 
-                if ( !cvc(stem) )
+                if (!cvc(stem))
                     str = stem;
             }
         }
 
-        if ( str.length() == 1 )
+        if (str.length() == 1)
             return str;
-        if ( (str.charAt(str.length()-1) == 'l') && (str.charAt(str.length()-2) == 'l') && (measure(str) > 1) )
-            if ( measure(str) > 1 ) {/* measure(str)==measure(stem) if ends in vowel */
+        if ((str.charAt(str.length() - 1) == 'l') && (str.charAt(str.length() - 2) == 'l') && (measure(str) > 1))
+            if (measure(str) > 1) {/* measure(str)==measure(stem) if ends in vowel */
                 String tmp = "";
-                for ( int i=0; i<str.length()-1; i++ )
-                    tmp += str.charAt( i );
+                for (int i = 0; i < str.length() - 1; i++)
+                    tmp += str.charAt(i);
                 str = tmp;
             }
         return str;

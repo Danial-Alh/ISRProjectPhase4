@@ -7,11 +7,6 @@ import java.util.HashMap;
 import java.util.Vector;
 
 public class DocInfo {
-    private String name;
-    private String newsGroup;
-    private Trie wordsInTrie; // it has words and their location in vector
-    private Vector<Term> words;
-
     public static HashMap<String,Character> hashmap;
     public static FileReader stopWordsReader;
     public static Stemmer stemmer;
@@ -21,6 +16,11 @@ public class DocInfo {
         createStopWordsSet();
     }
 
+    private String name;
+    private String newsGroup;
+    private Trie wordsInTrie; // it has words and their location in vector
+    private Vector<Term> words;
+
     public DocInfo(String docName, String newsGroup, String[] tokens)
     {
         this.name = docName;
@@ -29,10 +29,11 @@ public class DocInfo {
         this.words = new Vector<>();
 
         Vector<String> strings = new Vector<String>();
-        for(int i = 0 ; i < tokens.length ; i++){
-            if(!tokens[i].trim().equalsIgnoreCase(""))
-                strings.add(tokens[i]);
+        for (String token : tokens) {
+            if (!token.trim().equalsIgnoreCase(""))
+                strings.add(token);
         }
+
 
         delete_stop_words(strings);
         strings = completeStem(strings);
@@ -89,7 +90,7 @@ public class DocInfo {
 
     public static void createStopWordsSet(){
         stopWordsReader = new FileReader("Stopwords_en.txt");
-        hashmap = new HashMap<String, Character>();
+        hashmap = new HashMap<>();
         Vector<String> stopWords = new Vector<String>();
         while ((stopWords =stopWordsReader.readWithBufferSize(1000))!= null){
             for(String s : stopWords){
