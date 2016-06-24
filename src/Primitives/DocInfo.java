@@ -16,23 +16,28 @@ public class DocInfo {
     public static FileReader stopWordsReader;
     public static Stemmer stemmer;
 
+    static
+    {
+        createStopWordsSet();
+    }
+
     public DocInfo(String docName, String newsGroup, String[] tokens)
     {
         this.name = docName;
         this.newsGroup = newsGroup;
         this.wordsInTrie = new Trie();
-        this.words = new Vector<Term>();
+        this.words = new Vector<>();
 
-//        Vector<String> strings = new Vector<String>();
-//        for(int i = 0 ; i < tokens.length ; i++){
-//            strings.add(tokens[i]);
-//        }
+        Vector<String> strings = new Vector<String>();
+        for(int i = 0 ; i < tokens.length ; i++){
+            if(!tokens[i].trim().equalsIgnoreCase(""))
+                strings.add(tokens[i]);
+        }
 
-//        createStopWordsSet();
-//        delete_stop_words(strings);
-//        strings = completeStem(strings);
+        delete_stop_words(strings);
+        strings = completeStem(strings);
 
-        for(String token: tokens)
+        for(String token: strings)
             if(!token.trim().equalsIgnoreCase(""))
             {
                 Integer wordIndexInVector;
