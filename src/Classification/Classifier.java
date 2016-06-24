@@ -152,8 +152,9 @@ public class Classifier {
                 score *= getWordOccurenceProbabilityInClass(vector[i][j], classInfoIndex);
             }
         }
+        score *= getClassUseProbability(classInfoIndex);
         return score;
-    }
+    }//didam
 
     public void getdocClassMatch(DocInfo doc) {
         double maxScore = -1;
@@ -166,7 +167,7 @@ public class Classifier {
                 maxScore = currentScore;
                 index = i;
             }
-        }
+        }//DIDAM
     }
 
     public String[][] getVector(DocInfo doc)
