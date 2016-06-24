@@ -80,6 +80,8 @@ public class FileParser {
         }
         if (result.get(DocFieldKeys.KEY[2]) == null || result.get(DocFieldKeys.KEY[0]) == null)
             return null;
+        result.remove(DocFieldKeys.KEY[0]);
+        result.put(DocFieldKeys.KEY[0], f.getParentFile().getName());
         return new DocInfo(f.getName(), result.get(DocFieldKeys.KEY[0]),
                 result.get(DocFieldKeys.KEY[2]).split("[\\p{Punct}\\s]+"));
     }
