@@ -11,7 +11,9 @@ public class Main {
         File folder = new File("Samples/20_newsgroups/");
         Classifier classifier = null;
         classifier = new Classifier();
-        for (File groupFolder : folder.listFiles()) {
+        File[] groups = folder.listFiles();
+        for (int j = 0 ; j < 5; j++ ) {
+            File groupFolder = groups[j];
             System.out.println("group: " + groupFolder.getName());
             File[] docs = groupFolder.listFiles();
             int range = (int) (docs.length * 0.7);
