@@ -12,6 +12,7 @@ public class Classifier {
     private Vector<ClassInfo> classes;
     private Trie wordClassDictionary; // words and their class vector
     private Vector<String> words;
+    private static TermPresence[][] termPresences = null;
 
     public Classifier()
     {
@@ -104,8 +105,12 @@ public class Classifier {
                     scores.removeElementAt(ClassInfo.specifyingSize);
                 }
             }
+            if(specifiers.size() == 0)
+                System.out.println("ohhhhhh");
             classInfo.setSpecifiers(specifiers);
         }
+
+        initTermPresenceVector();
     }
 
     private double calculateWordScoreForClass(String word, int classInfoIndex) {
@@ -125,9 +130,25 @@ public class Classifier {
 
     public double getWordOccurenceProbabilityInClass(String word, int classInfoIndex) // P(wi, ck)
     {
+        double probability = 0;
         ClassInfo classInfo = classes.elementAt(classInfoIndex);
         Vector<DocInfo> docVector = (Vector<DocInfo>) classInfo.getWordsDocDictionary().get(word);
-        return docVector.size() / ((double) classInfo.getDocs().size());
+        probability = (docVector == null) ? 0 :
+                (docVector.size() / ((double) classInfo.getDocs().size()));
+        return probability;
+    }
+
+    public double getWordOccurNOccurProbabilityInClass(TermPresence termPresence, int classInfoIndex) // P(wi, ck)
+    {
+        try {
+
+        double probability = getWordOccurenceProbabilityInClass(termPresence.word, classInfoIndex);
+        return (termPresence.isPresent ? probability : 1.0-probability);
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+            return 0;
+        }
     }
 
     public double getAverageWordOccurenceInClass(String word, int classInfoIndex)
@@ -145,18 +166,18 @@ public class Classifier {
 
     public double getDocClassMatchProbability(int classInfoIndex, DocInfo doc)
     {
-        String[][] vector = getVector(doc);
+        fillTermPresenceVector(doc);
         double score = 1;
-        for(int i = 0; i < vector.length; i++) {
-            for (int j = 0; j < vector[i].length; j++) {
-                score *= getWordOccurenceProbabilityInClass(vector[i][j], classInfoIndex);
+        for(int i = 0; i < termPresences.length; i++) {
+            for (int j = 0; j < termPresences[i].length; j++) {
+                score *= getWordOccurNOccurProbabilityInClass(termPresences[i][j], classInfoIndex);
             }
         }
         score *= getClassUseProbability(classInfoIndex);
         return score;
     }//didam
 
-    public void getdocClassMatch(DocInfo doc) {
+    public String getdocClassMatch(DocInfo doc) {
         double maxScore = -1;
         int index = -1;
         for(int i = 0; i < classes.size(); i++)
@@ -168,21 +189,30 @@ public class Classifier {
                 index = i;
             }
         }//DIDAM
+        return classes.elementAt(index).getNewsGroup();
     }
 
-    public String[][] getVector(DocInfo doc)
+    public void fillTermPresenceVector(DocInfo doc)
     {
-        String[][] result = new String[classes.size()][ClassInfo.specifyingSize];
         for (int i = 0; i < classes.size(); i++) {
             ClassInfo classInfo = classes.elementAt(i);
             for (int j = 0; j < classInfo.getSpecifiers().size(); j++) {
                 if (doc.getWordsInTrie().get(classInfo.getSpecifiers().elementAt(j)) == null)
-                    result[i][j] = null;
+                    termPresences[i][j].isPresent = false;
                 else
-                    result[i][j] = classInfo.getSpecifiers().elementAt(j);
+                    termPresences[i][j].isPresent = true;
             }
         }
-        return result;
+    }
+
+    private void initTermPresenceVector() {
+        termPresences = new TermPresence[classes.size()][ClassInfo.specifyingSize];
+        for (int i = 0; i < classes.size(); i++) {
+            ClassInfo classInfo = classes.elementAt(i);
+            for (int j = 0; j < classInfo.getSpecifiers().size(); j++) {
+                termPresences[i][j] = new TermPresence(classInfo.getSpecifiers().elementAt(j), false);
+            }
+        }
     }
 
     public Vector<ClassInfo> getClasses() {
@@ -224,6 +254,16 @@ public class Classifier {
         public WordOccurenceInAllClasses(Vector<WordOccurenceInClass> area, long occurences)
         {
             super(area, occurences);
+        }
+    }
+
+    public class TermPresence {
+        public String word;
+        public boolean isPresent;
+
+        public TermPresence(String word, boolean isPresent) {
+            this.word = word;
+            this.isPresent = isPresent;
         }
     }
 }
