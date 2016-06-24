@@ -1,23 +1,28 @@
 package Classification;
 
-import Primitives.ClassInfo;
-import Primitives.DocInfo;
-import Primitives.OccurenceHolder;
-import Primitives.Term;
+import FileManagement.RandomAccessFileManager;
+import Primitives.*;
+import Primitives.Tree.RamFileBtree;
+import Primitives.Vector.FileVector;
 import com.sun.org.apache.xml.internal.utils.Trie;
 
 import java.util.Vector;
 
 public class Classifier {
+    private final int fileID;
+    private final Long indexPtr;
     private Vector<ClassInfo> classes;
-    private Trie wordClassDictionary; // words and their class vector
-    private Vector<String> words;
+//    private Trie wordClassDictionary; // words and their class vector
+    private RamFileBtree<> wordClassDictionary; // words and their class vector
+    private FileVector<MyString> words;
 
     public Classifier()
     {
         classes = new Vector<ClassInfo>();
         wordClassDictionary = new Trie();
-        words = new Vector<String>();
+        fileID = RandomAccessFileManager.createNewInstance("classifier");
+        words = new FileVector<>(MyString.class, fileID);
+        indexPtr = words.createNewIndex();
     }
 
     public void addNewDoc(DocInfo newDoc)
@@ -42,7 +47,7 @@ public class Classifier {
             {
                 classVector = new WordOccurenceInAllClasses(new Vector<WordOccurenceInClass>(), 0);
                 wordClassDictionary.put(term.content, classVector);
-                words.add(term.content);
+//                words.writeElementAt(indexPtr, words.size(), new MyString(term.content));
             }
             WordOccurenceInClass classData = getWordOccurenceInClassFromVector(classVector, classInfo);
             if(classData == null)
@@ -178,14 +183,6 @@ public class Classifier {
 
     public void setWordClassDictionary(Trie wordClassDictionary) {
         this.wordClassDictionary = wordClassDictionary;
-    }
-
-    public Vector<String> getWords() {
-        return words;
-    }
-
-    public void setWords(Vector<String> words) {
-        this.words = words;
     }
 
     class WordOccurenceInClass extends OccurenceHolder<ClassInfo>

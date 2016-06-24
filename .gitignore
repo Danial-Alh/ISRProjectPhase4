@@ -1,6 +1,8 @@
 # Files
 *.iml
 *.txt
+*.rar
+*.isr
 
 # Folders
 .idea/
