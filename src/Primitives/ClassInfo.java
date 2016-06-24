@@ -17,6 +17,7 @@ public class ClassInfo {
         this.newsGroup = newsGroup;
         this.wordsDocDictionary = new Trie();
         this.docs = new Vector<DocInfo>();
+        words = new Vector<String>();
     }
 
     public static int getSpecifyingSize() {

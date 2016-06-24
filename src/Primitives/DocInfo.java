@@ -23,9 +23,14 @@ public class DocInfo {
                 Integer wordIndexInVector;
                 if((wordIndexInVector = (Integer) wordsInTrie.get(token)) == null)
                 {
-                    words.add(new Term(token, 1));
-                    wordIndexInVector = words.size()-1;
-                    wordsInTrie.put(token, wordIndexInVector);
+                    try {
+                        words.add(new Term(token, 1));
+                        wordIndexInVector = words.size() - 1;
+                        wordsInTrie.put(token, wordIndexInVector);
+                    } catch (Exception e) {
+                        words.removeElementAt(words.size() - 1);
+                        continue;
+                    }
                 }
                 else
                     words.elementAt(wordIndexInVector).occurences++;

@@ -17,6 +17,7 @@ public class Classifier {
     {
         classes = new Vector<ClassInfo>();
         wordClassDictionary = new Trie();
+        words = new Vector<String>();
     }
 
     public void addNewDoc(DocInfo newDoc)

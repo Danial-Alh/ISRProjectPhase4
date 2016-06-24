@@ -1,13 +1,10 @@
 package FileManagement;
 
 import Primitives.DocInfo;
-import javafx.util.Pair;
-import sun.java2d.loops.FillPath;
 
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.Vector;
 
 public class FileParser {
 
@@ -60,12 +57,13 @@ public class FileParser {
                     value = value.split(",")[0];
                 else if( key.equalsIgnoreCase(DocFieldKeys.KEY[2]) )
                 {
-                    int numberOfLines = Integer.parseInt(tokens[1]);
+                    int numberOfLines = 0;
+                    numberOfLines = Integer.parseInt(tokens[tokens.length - 1]);
                     value = "";
                     for(int i = 0; i < numberOfLines; i++)
                     {
                         line = br.readLine();
-                        if(!line.trim().equalsIgnoreCase(""))
+                        if (line != null && !line.trim().equalsIgnoreCase(""))
                             value += line + "\n";
                     }
                 }
@@ -75,6 +73,8 @@ public class FileParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (result.get(DocFieldKeys.KEY[2]) == null)
+            return null;
         return new DocInfo(f.getName(), result.get(DocFieldKeys.KEY[0]),
                 result.get(DocFieldKeys.KEY[2]).split("[\\p{Punct}\\s]+"));
     }
