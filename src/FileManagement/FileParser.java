@@ -58,7 +58,12 @@ public class FileParser {
                 else if( key.equalsIgnoreCase(DocFieldKeys.KEY[2]) )
                 {
                     int numberOfLines = 0;
-                    numberOfLines = Integer.parseInt(tokens[tokens.length - 1]);
+                    try {
+
+                        numberOfLines = Integer.parseInt(tokens[tokens.length - 1]);
+                    } catch (Exception e) {
+                        return null;
+                    }
                     value = "";
                     for(int i = 0; i < numberOfLines; i++)
                     {
@@ -73,7 +78,7 @@ public class FileParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (result.get(DocFieldKeys.KEY[2]) == null)
+        if (result.get(DocFieldKeys.KEY[2]) == null || result.get(DocFieldKeys.KEY[0]) == null)
             return null;
         return new DocInfo(f.getName(), result.get(DocFieldKeys.KEY[0]),
                 result.get(DocFieldKeys.KEY[2]).split("[\\p{Punct}\\s]+"));

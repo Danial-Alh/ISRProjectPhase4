@@ -164,6 +164,30 @@ public class Classifier {
         return result;
     }
 
+    public Vector<ClassInfo> getClasses() {
+        return classes;
+    }
+
+    public void setClasses(Vector<ClassInfo> classes) {
+        this.classes = classes;
+    }
+
+    public Trie getWordClassDictionary() {
+        return wordClassDictionary;
+    }
+
+    public void setWordClassDictionary(Trie wordClassDictionary) {
+        this.wordClassDictionary = wordClassDictionary;
+    }
+
+    public Vector<String> getWords() {
+        return words;
+    }
+
+    public void setWords(Vector<String> words) {
+        this.words = words;
+    }
+
     class WordOccurenceInClass extends OccurenceHolder<ClassInfo>
     {
 
