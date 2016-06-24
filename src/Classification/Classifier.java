@@ -5,6 +5,7 @@ import Primitives.DocInfo;
 import Primitives.OccurenceHolder;
 import Primitives.Term;
 import com.sun.org.apache.xml.internal.utils.Trie;
+import com.sun.swing.internal.plaf.synth.resources.synth_sv;
 
 import java.util.Vector;
 
@@ -190,6 +191,21 @@ public class Classifier {
             }
         }//DIDAM
         return classes.elementAt(index).getNewsGroup();
+    }
+    public int getdocClassMatchIndex(DocInfo doc) {
+        double maxScore = -1;
+        int index = -1;
+
+        for(int i = 0; i < classes.size(); i++)
+        {
+            double currentScore = getDocClassMatchProbability(i, doc);
+            if(currentScore > maxScore)
+            {
+                maxScore = currentScore;
+                index = i;
+            }
+        }
+        return index;
     }
 
     public void fillTermPresenceVector(DocInfo doc)
