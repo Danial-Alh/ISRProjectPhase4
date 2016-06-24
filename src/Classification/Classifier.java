@@ -145,8 +145,28 @@ public class Classifier {
 
     public double getDocClassMatchProbability(int classInfoIndex, DocInfo doc)
     {
-        // TODO
-        return -1;
+        String[][] vector = getVector(doc);
+        double score = 1;
+        for(int i = 0; i < vector.length; i++) {
+            for (int j = 0; j < vector[i].length; j++) {
+                score *= getWordOccurenceProbabilityInClass(vector[i][j], classInfoIndex);
+            }
+        }
+        return score;
+    }
+
+    public void getdocClassMatch(DocInfo doc) {
+        double maxScore = -1;
+        int index = -1;
+        for(int i = 0; i < classes.size(); i++)
+        {
+            double currentScore = getDocClassMatchProbability(i, doc);
+            if(currentScore > maxScore)
+            {
+                maxScore = currentScore;
+                index = i;
+            }
+        }
     }
 
     public String[][] getVector(DocInfo doc)

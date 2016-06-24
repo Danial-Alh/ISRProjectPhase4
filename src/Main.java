@@ -28,5 +28,18 @@ public class Main {
             for (String word : classInfo.getSpecifiers())
                 System.out.println(word);
         }
+
+        for (File groupFolder : folder.listFiles()) {
+            System.out.println("group: " + groupFolder.getName());
+            File[] docs = groupFolder.listFiles();
+            int range = (int) (docs.length * 0.7);
+            for (int i = range; i < docs.length; i++) {
+                DocInfo result = FileParser.parse(docs[i]);
+                if (result == null)
+                    continue;
+
+                classifier.getdocClassMatch(result);
+            }
+        }
     }
 }
