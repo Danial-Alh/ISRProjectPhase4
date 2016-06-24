@@ -20,7 +20,7 @@ public class Main {
         Classifier classifier = null;
         classifier = new Classifier();
         File[] groups = folder.listFiles();
-        for (int j = 1; j < numberOfGroups; j++) {
+        for (int j = 0; j < numberOfGroups; j++) {
             File groupFolder = groups[j];
             System.out.println("group: " + groupFolder.getName());
             File[] docs = groupFolder.listFiles();
@@ -49,7 +49,7 @@ public class Main {
                 confusionMatrix[i][j]=0;
             }
         }
-        for (int j = 1; j < numberOfGroups; j++) {
+        for (int j = 0; j < numberOfGroups; j++) {
             File groupFolder = groups[j];
             System.out.println("group: " + groupFolder.getName());
             File[] docs = groupFolder.listFiles();

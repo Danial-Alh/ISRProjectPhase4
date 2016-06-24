@@ -81,7 +81,7 @@ public class DocInfo {
                 str = str.substring(0,str.length()-1);
 //                System.out.println(str);
             }
-            if(hashmap.containsKey(str) == true){
+            if (hashmap.containsKey(str.toLowerCase()) == true) {
 //                System.out.println("##  "  + str);
                 words.remove(i);
             }
@@ -94,7 +94,7 @@ public class DocInfo {
         Vector<String> stopWords = new Vector<String>();
         while ((stopWords =stopWordsReader.readWithBufferSize(1000))!= null){
             for(String s : stopWords){
-                hashmap.put(s,'@');
+                hashmap.put(s.toLowerCase().substring(0, s.length() - 1), '@');
             }
         }
 
