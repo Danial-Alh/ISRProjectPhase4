@@ -23,14 +23,14 @@ public class DocInfo {
         this.wordsInTrie = new Trie();
         this.words = new Vector<Term>();
 
-        Vector<String> strings = new Vector<String>();
-        for(int i = 0 ; i < tokens.length ; i++){
-            strings.add(tokens[i]);
-        }
+//        Vector<String> strings = new Vector<String>();
+//        for(int i = 0 ; i < tokens.length ; i++){
+//            strings.add(tokens[i]);
+//        }
 
-        createStopWordsSet();
-        delete_stop_words(strings);
-        strings = completeStem(strings);
+//        createStopWordsSet();
+//        delete_stop_words(strings);
+//        strings = completeStem(strings);
 
         for(String token: tokens)
             if(!token.trim().equalsIgnoreCase(""))
@@ -83,7 +83,7 @@ public class DocInfo {
     }
 
     public static void createStopWordsSet(){
-        stopWordsReader = new FileReader("/Users/mohammad/workspace/ISR/phase4/src/Stopwords_en.txt");
+        stopWordsReader = new FileReader("Stopwords_en.txt");
         hashmap = new HashMap<String, Character>();
         Vector<String> stopWords = new Vector<String>();
         while ((stopWords =stopWordsReader.readWithBufferSize(1000))!= null){
